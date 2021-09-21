@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Projeto NaCl</title>
+	<meta charset="UTF-8">
+	<style type="text/css">
+		@font-face {
+			font-family: "Whitney";
+			font-style: normal;
+			text-rendering: optimizeLegibility;
+			src: local("Whitney Medium"), url("whitneymedium") format("woff");
+		}
+		* {
+			box-sizing: border-box;
+			transition-duration: 0.5s;
+		}
+		::-webkit-scrollbar {
+			width: 0.5em;
+			background: #181818;
+		}
+		::-webkit-scrollbar-thumb {
+			transition-duration: 0.5s;
+			background: #353535;
+		}
+		::-webkit-scrollbar-thumb:hover {
+			transition-duration: 0.5s;
+			background: #808080;
+		}
+		html, body {
+			font-size: 14px;
+			font-weight: 500;
+			color: #f0f0f0;
+			
+			font-family: Whitney, Roboto;
+			min-height: 100vh;
+			min-width: 100vw;
+			margin: 0;
+			padding: 0;
+		}
+		body {
+			background-color: #181818;
+		}
+		input {
+			border-top: 0;
+			border-left: 0;
+			border-right: 0;
+			padding: 0.5em;
+			padding-left: 1em;
+			padding-right: 1em;
+		}
+		input[type=submit] {
+			cursor: pointer;
+			background: #25252570;
+			color: #909090;
+			border-bottom-style: solid;
+			border-bottom-width: 1.5px;
+			border-bottom-color: #252525;
+		}
+		input[type=submit]:hover {
+			border-bottom-color: #f00000;
+			color: #ffffffd0;
+			background: #25252590;
+		}
+		input[type=text]:focus:hover, input[type=text]:focus{
+			border-bottom-color: #ff0000;
+		}
+		input[type=text]:hover {
+			border-bottom-color: #606060;
+		}
+		input[type=text]::placeholder {
+			font-family: Whitney;
+			transition-duration: 0.5s;
+			color: #707070;
+		}
+		input[type=text]:focus::placeholder, input[type=text]:hover::placeholder {
+			color: #a0a0a0;
+		}
+		.chat {
+			display: flex;
+			position: fixed;
+			flex-direction: column;
+			width: 100%;
+			height: 100%;
+		}
+		header, main, footer {
+			display: flex;
+			width: 100%;
+			padding: 1em;
+			align-items: center;
+			justify-content: center;
+		}
+		header {
+			flex: 0.05;
+			max-height: 10%;
+		}
+		main {	
+			display: flex;
+			max-height: 80%;
+			background: #202020;
+			flex: 0.9;
+		}
+		main .title {
+			text-align: center;
+			flex: 0.25;
+		}
+		main .rooms {
+			max-height: 100%;
+			overflow-y: scroll;
+			flex-wrap: nowrap;
+			flex-direction: row;
+			flex: 0.75;
+		}
+		main .rooms .room {
+			/*width: 50%;*/
+			flex: 1 0 auto;
+			padding: 0.5em;
+			height: 10em;
+			background-color: #222222;
+			border-bottom-style: solid;
+			border-bottom-width: 1.5px;
+			border-bottom-color: #353535;
+		}
+		main .rooms .room .description {
+
+		}
+		footer {
+			flex: 0.05;
+			max-height: 10%;
+			display: flex;
+			align-items: flex-end;
+			flex-direction: row;
+		}
+		footer .left {
+			flex: 0.25;
+			display: flex;
+			height: 100%;
+			align-items: flex-end;
+		}
+		footer .left .user {
+			display: flex;
+			border-bottom-style: solid;
+			border-bottom-width: 1.5px;
+			border-bottom-color: #f00f0f;
+		}
+		footer .left .user .name {
+			color: #f0f0f0;
+		}
+		footer .left .user .id {
+			font-size: 14px;
+			color: #606060;
+			margin-left: 0.25em;
+		}
+		footer .middle {
+			flex: 0.50;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin-left: auto;
+			margin-right: auto;
+		}
+		footer .middle .type {
+			display: flex;
+			align-items: center;
+			width: 100%;
+		}
+		footer .middle .type input {
+			font-family: Whitney;
+			outline: 0;
+			width: 100%;
+			transition-duration: 0.5s;
+			border-top-right-radius: 5%;
+			border-top-left-radius: 5%;
+			border-bottom-style: solid;
+			border-bottom-width: 1.5px;
+			border-bottom-color: #353535;
+			color: #ffffffd0;
+			background: #25252570;
+		}
+		footer .right {
+			flex: 0.25;
+			display: flex;
+		}
+		footer .right .key {	
+			display: flex;
+			overflow-x: auto;
+		}
+		footer .right .key .title {
+			color: #808080;
+		}
+		footer .right .key .content {
+			margin-left: 0.25em;
+			color: #606060;
+		}
+	</style>
+</head>
+<body>
+	<section class="chat">
+		<header>
+			<span>header</span>
+		</header>
+		<main>
+			<div class="title">Chose a room</div>
+			<div class="rooms">
+				<div class="room">Room 1</div>
+				<div class="room">Room 2</div>
+				<div class="room">Room 3</div>
+			</div>
+		</main>
+		<footer>
+			<div class="left">
+				<div class="user">
+					<div class="name"></div>
+					<div class="id"></div>
+				</div>
+			</div>
+			<div class="middle">
+				<div class="type">
+					<input type="text" placeholder="type on me">
+				</div>
+			</div>
+			<div class="right">
+				<div class="key">
+					<div class="title">PublicKey</div>
+					<div class="content"></div>
+				</div>
+			</div>
+		</footer>
+	</section>
+</body>
+	<script type="text/javascript" src="socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="nacl.js"></script>
+	<script type="text/javascript" src="nacl-util.js"></script>
+	<script type="text/javascript">
+		const header = document.querySelector("header");
+		const main = document.querySelector("main");
+		const footer = document.querySelector("footer");
+		const chatSection = document.querySelector(".chat");
+		const roomsContainer = document.querySelector(".rooms");
+		const userContainer = document.querySelector(".user");
+		const userNameDiv = document.querySelector(".user .name");
+		const useridDiv = document.querySelector(".user .id");
+		const inputContainer = document.querySelector(".type");
+		const inputDiv = document.querySelector(".type input");
+		const keyContainer = document.querySelector(".key");
+		const keyTitleDiv = document.querySelector(".key .title");
+		const keyContentDiv = document.querySelector(".key .content");
+
+		onkeypress = function(event) {
+			if (event.key == "+") {
+				roomsContainer.insertAdjacentHTML("BeforeEnd",'<div class="room">Room ' + (roomsContainer.children.length + 1) + '</div>');
+			} else if (event.key == "-") {
+			 	roomsContainer.children[roomsContainer.children.length - 1].remove();
+			}
+		}
+
+		function encrypt(message, key) {
+			try {
+				var nonce = nacl.randomBytes(nacl.box.nonceLength);
+				var array = nacl.util.decodeUTF8(message);
+				var encrypted = nacl.box(array, nonce, key, keys.secretKey);
+				var content = new Uint8Array(nonce.length + encrypted.length);
+				content.set(nonce);
+				content.set(encrypted, nonce.length);
+				return nacl.util.encodeBase64(content);
+			} catch (e) {
+				console.error(`encrypt(${message}, ${key}); Error: ${e}`);
+			}
+		}
+
+		function decrypt(message, key) {
+			try {
+				var array = nacl.util.decodeBase64(message);
+				var nonce = array.slice(0, nacl.box.nonceLength);
+				var content = array.slice(nacl.box.nonceLength, array.length);
+				var decrypted = nacl.box.open(content, nonce, key, keys.secretKey);
+				return nacl.util.encodeUTF8(decrypted);
+			} catch (e) {
+				console.error(`decrypt(${message}, ${key}); Error: ${e}`);
+			}
+		}
+
+		const keys = nacl.box.keyPair();
+
+		keyContentDiv.textContent = nacl.util.encodeBase64(keys.publicKey);
+
+		const socket = io.connect();
+
+		var rooms = {};
+
+		const lob = "Lobinho";
+
+		var serverKey;
+		var messageNonce;
+		var clientId;
+		socket.emit("serverKey", function(key) {
+			serverKey = nacl.util.decodeBase64(key);
+			console.log("server", serverKey);
+			console.log("client", keys.publicKey);
+			
+			socket.emit("login", encrypt(lob, serverKey), nacl.util.encodeBase64(keys.publicKey), function(nonce, id) {
+				messageNonce = decrypt(nonce, serverKey);
+				clientId = decrypt(id, serverKey);
+				userNameDiv.textContent = lob;
+				useridDiv.textContent = "#" + clientId;
+			});
+		});
+
+		socket.on("publickey", function(id, key) {
+
+		});
+		socket.on("ask", function(room, id) {
+			
+		});
+		socket.on("join", function(room, id) {
+			
+		});
+		socket.on("message", function(room, id, message) {
+			
+		});
+		socket.on("read", function(room, id, message) {
+			
+		});
+		socket.on("leave", function(room, id) {
+			
+		});
+	</script>
+
+</html>
