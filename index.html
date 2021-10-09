@@ -119,10 +119,15 @@
 			border-bottom-width: 1.5px;
 			border-bottom-color: #353535;
 		}
+		main .rooms .room:hover {
+			color: #f0f0f0;
+		}
 		main .rooms .room .name {
+			color: #707070;
 			padding: 0.5em;
 		}
 		main .rooms .room .description {
+			color: #707070;
 			padding: 0.75em;
 		}
 		footer {
@@ -259,7 +264,7 @@
 			} else if (event.key == "-") {
 				try {
 					roomsContainer.children[roomsContainer.children.length - 1].remove();
-				} catch () {}
+				} catch {}
 			}
 		}
 
