@@ -30,7 +30,6 @@
 			font-size: 14px;
 			font-weight: 500;
 			color: #f0f0f0;
-			
 			font-family: Whitney, Roboto;
 			min-height: 100vh;
 			min-width: 100vw;
@@ -120,8 +119,11 @@
 			border-bottom-width: 1.5px;
 			border-bottom-color: #353535;
 		}
+		main .rooms .room .name {
+			padding: 0.5em;
+		}
 		main .rooms .room .description {
-
+			padding: 0.75em;
 		}
 		footer {
 			flex: 0.05;
@@ -201,9 +203,15 @@
 		<main>
 			<div class="title">Chose a room</div>
 			<div class="rooms">
-				<div class="room">Room 1</div>
-				<div class="room">Room 2</div>
-				<div class="room">Room 3</div>
+				<div class="room">
+					<div class="name">Room 1</div>
+					<div class="description">
+						Lorem ipsum dolor sit amet. Ut dolores galisum et maxime minus in dolorem velit. Et natus minima ut porro sequi et temporibus dolorum vel nemo placeat.
+
+						Aut molestiae sunt qui natus consequatur qui vero omnis a Quis enim sit repellat quisquam hic similique accusamus eos quam ipsam. Aut voluptatem temporibus sed deserunt omnis est alias asperiores ad voluptas voluptatem est amet voluptatem et unde consequatur sit accusamus vero. Et laudantium doloremque aut incidunt sequi vel inventore Quis ea esse internos.
+						
+						Aut deserunt beatae quo rerum dignissimos est facilis consequuntur ab voluptatem consequuntur qui voluptatum aliquid. Et fuga dolor qui ipsa galisum vel perspiciatis illum aut voluptas molestiae. Sit nisi magnam aut consequatur nemo est atque quisquam.</div>
+					</div>
 			</div>
 		</main>
 		<footer>
@@ -249,7 +257,9 @@
 			if (event.key == "+") {
 				roomsContainer.insertAdjacentHTML("BeforeEnd",'<div class="room">Room ' + (roomsContainer.children.length + 1) + '</div>');
 			} else if (event.key == "-") {
-			 	roomsContainer.children[roomsContainer.children.length - 1].remove();
+				try {
+					roomsContainer.children[roomsContainer.children.length - 1].remove();
+				} catch () {}
 			}
 		}
 
@@ -287,7 +297,7 @@
 
 		var rooms = {};
 
-		const lob = "Lobinho";
+		const myname = "BANBAN";
 
 		var serverKey;
 		var messageNonce;
@@ -297,10 +307,10 @@
 			console.log("server", serverKey);
 			console.log("client", keys.publicKey);
 			
-			socket.emit("login", encrypt(lob, serverKey), nacl.util.encodeBase64(keys.publicKey), function(nonce, id) {
+			socket.emit("login", encrypt(myname, serverKey), nacl.util.encodeBase64(keys.publicKey), function(nonce, id) {
 				messageNonce = decrypt(nonce, serverKey);
 				clientId = decrypt(id, serverKey);
-				userNameDiv.textContent = lob;
+				userNameDiv.textContent = myname;
 				useridDiv.textContent = "#" + clientId;
 			});
 		});
