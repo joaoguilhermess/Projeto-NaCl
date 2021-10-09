@@ -49,33 +49,6 @@
 			padding-left: 1em;
 			padding-right: 1em;
 		}
-		input[type=submit] {
-			cursor: pointer;
-			background: #25252570;
-			color: #909090;
-			border-bottom-style: solid;
-			border-bottom-width: 1.5px;
-			border-bottom-color: #252525;
-		}
-		input[type=submit]:hover {
-			border-bottom-color: #f00000;
-			color: #ffffffd0;
-			background: #25252590;
-		}
-		input[type=text]:focus:hover, input[type=text]:focus{
-			border-bottom-color: #ff0000;
-		}
-		input[type=text]:hover {
-			border-bottom-color: #606060;
-		}
-		input[type=text]::placeholder {
-			font-family: Whitney;
-			transition-duration: 0.5s;
-			color: #707070;
-		}
-		input[type=text]:focus::placeholder, input[type=text]:hover::placeholder {
-			color: #a0a0a0;
-		}
 		.chat {
 			display: flex;
 			position: fixed;
@@ -112,9 +85,10 @@
 			flex: 0.75;
 		}
 		main .rooms .room {
-			/*width: 50%;*/
+			display: flex;
+			flex-direction: column;
 			color: #808080;
-			flex: 1 0 auto;
+			/* flex: 1 0 auto; */
 			padding: 0.5em;
 			height: 10em;
 			max-height: 10em;
@@ -128,6 +102,10 @@
 			max-height: unset;
 			height: fit-content;
 		}
+		main .rooms .room .header {
+			display: flex;
+			justify-content: space-between;
+		}
 		main .rooms .room .name {
 			padding: 0.5em;
 		}
@@ -137,6 +115,19 @@
 		main .rooms .room .description {
 			color: #606060;
 			padding: 0.75em;
+		}
+		main .rooms .room .join {
+			cursor: pointer;
+			background: #25252570;
+			color: #909090;
+			border-bottom-style: solid;
+			border-bottom-width: 1.5px;
+			border-bottom-color: #252525;
+		}
+		main .rooms .room .join:hover {
+			border-bottom-color: #f00000;
+			color: #ffffffd0;
+			background: #25252590;
 		}
 		main .rooms .room:hover .description {
 			color: #808080;
@@ -184,6 +175,20 @@
 			display: flex;
 			align-items: center;
 			width: 100%;
+		}
+		footer .middle .type:focus:hover, footer .middle .type:focus{
+			border-bottom-color: #ff0000;
+		}
+		footer .middle .type:hover {
+			border-bottom-color: #606060;
+		}
+		footer .middle .type::placeholder {
+			font-family: Whitney;
+			transition-duration: 0.5s;
+			color: #707070;
+		}
+		footer .middle .type:focus::placeholder, footer .middle .type:hover::placeholder {
+			color: #a0a0a0;
 		}
 		footer .middle .type input {
 			font-family: Whitney;
@@ -283,20 +288,32 @@
 		}
 		function createRoom(name, description, id) {
 			var room = document.createElement("div");
+			var roomHeader = document.createElement("div");
 			var roomName = document.createElement("div");
 			var roomDescription = document.createElement("div");
+			var joinButton = document.createElement("input");
 			
 			room.classList.add("room");
+			roomHeader.classList.add("header");
 			roomName.classList.add("name"); 
 			roomDescription.classList.add("description");
-			room.append(roomName);
+			joinButton.classList.add("join");
+			room.append(roomHeader);
+			room.header = roomHeader;
+
+			room.header.append(roomName);
+			room.name = roomName;
+			room.name.textContent = name;
+
+			room.header.append(joinButton);
+			room.join = joinButton;
+			room.join.type = "submit";
+
 			room.append(roomDescription);
+			room.description = roomDescription;
+			room.description.textContent = description;
 
 			room.id = id;
-			room.name = roomName;
-			room.description = roomDescription;
-			room.name.textContent = name;
-			room.description.textContent = description;
 			rooms[id] = room;
 
 			roomsContainer.append(room);
