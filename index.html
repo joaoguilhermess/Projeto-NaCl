@@ -104,31 +104,39 @@
 		}
 		main .rooms {
 			max-height: 100%;
-			overflow-y: scroll;
+			overflow-y: auto;
 			flex-wrap: nowrap;
 			flex-direction: row;
 			flex: 0.75;
 		}
 		main .rooms .room {
 			/*width: 50%;*/
+			color: #808080;
 			flex: 1 0 auto;
 			padding: 0.5em;
 			height: 10em;
+			max-height: 10em;
+			overflow-y: hidden;
 			background-color: #222222;
 			border-bottom-style: solid;
 			border-bottom-width: 1.5px;
 			border-bottom-color: #353535;
 		}
-		main .rooms .room:hover {
-			color: #f0f0f0;
+		main .rooms .room:target {
+			max-height: unset;
 		}
 		main .rooms .room .name {
-			color: #707070;
 			padding: 0.5em;
 		}
+		main .rooms .room:hover .name {
+			color: #f0f0f0;
+		}
 		main .rooms .room .description {
-			color: #707070;
+			color: #606060;
 			padding: 0.75em;
+		}
+		main .rooms .room:hover .description {
+			color: #808080;
 		}
 		footer {
 			flex: 0.05;
@@ -139,6 +147,7 @@
 		}
 		footer .left {
 			flex: 0.25;
+			max-width: 24%;
 			display: flex;
 			height: 100%;
 			align-items: flex-end;
@@ -159,7 +168,10 @@
 		}
 		footer .middle {
 			flex: 0.50;
+			max-width: 52%;
 			display: flex;
+			padding-left: 0.5em;
+			padding-right: 0.5em;
 			justify-content: center;
 			align-items: center;
 			margin-left: auto;
@@ -185,6 +197,7 @@
 		}
 		footer .right {
 			flex: 0.25;
+			max-width: 24%;
 			display: flex;
 		}
 		footer .right .key {	
@@ -207,17 +220,7 @@
 		</header>
 		<main>
 			<div class="title">Chose a room</div>
-			<div class="rooms">
-				<div class="room">
-					<div class="name">Room 1</div>
-					<div class="description">
-						Lorem ipsum dolor sit amet. Ut dolores galisum et maxime minus in dolorem velit. Et natus minima ut porro sequi et temporibus dolorum vel nemo placeat.
-
-						Aut molestiae sunt qui natus consequatur qui vero omnis a Quis enim sit repellat quisquam hic similique accusamus eos quam ipsam. Aut voluptatem temporibus sed deserunt omnis est alias asperiores ad voluptas voluptatem est amet voluptatem et unde consequatur sit accusamus vero. Et laudantium doloremque aut incidunt sequi vel inventore Quis ea esse internos.
-						
-						Aut deserunt beatae quo rerum dignissimos est facilis consequuntur ab voluptatem consequuntur qui voluptatum aliquid. Et fuga dolor qui ipsa galisum vel perspiciatis illum aut voluptas molestiae. Sit nisi magnam aut consequatur nemo est atque quisquam.</div>
-					</div>
-			</div>
+			<div class="rooms"></div>
 		</main>
 		<footer>
 			<div class="left">
@@ -244,6 +247,16 @@
 	<script type="text/javascript" src="nacl.js"></script>
 	<script type="text/javascript" src="nacl-util.js"></script>
 	<script type="text/javascript">
+		const lorem = "Lorem ipsum dolor sit amet. Ut dolores galisum et maxime minus in dolorem velit.\
+		Et natus minima ut porro sequi et temporibus dolorum vel nemo placeat. Aut molestiae sunt qui n\
+		atus consequatur qui vero omnis a Quis enim sit repellat quisquam hic similique accusamus eos q\
+		uam ipsam. Aut voluptatem temporibus sed deserunt omnis est alias asperiores ad voluptas volupt\
+		atem est amet voluptatem et unde consequatur sit accusamus vero. Et laudantium doloremque aut i\
+		ncidunt sequi vel inventore Quis ea esse internos. Aut deserunt beatae quo rerum dignissimos es\
+		t facilis consequuntur ab voluptatem consequuntur qui voluptatum aliquid. Et fuga dolor qui ips\
+		a galisum vel perspiciatis illum aut voluptas molestiae. Sit nisi magnam aut consequatur nemo e\
+		st atque quisquam.";
+
 		const header = document.querySelector("header");
 		const main = document.querySelector("main");
 		const footer = document.querySelector("footer");
@@ -260,11 +273,41 @@
 
 		onkeypress = function(event) {
 			if (event.key == "+") {
-				roomsContainer.insertAdjacentHTML("BeforeEnd",'<div class="room">Room ' + (roomsContainer.children.length + 1) + '</div>');
+				createRoom("Room " + (roomsContainer.children.length + 1), lorem + lorem + lorem, null);
 			} else if (event.key == "-") {
+				removeRoom();
+			}
+		}
+		function createRoom(name, description, id) {
+			var room = document.createElement("div");
+			var roomName = document.createElement("div");
+			var roomDescription = document.createElement("div");
+			
+			room.classList.add("room");
+			roomName.classList.add("name"); 
+			roomDescription.classList.add("description");
+			room.append(roomName);
+			room.append(roomDescription);
+
+			room.id = id;
+			room.name = roomName;
+			room.description = roomDescription;
+			room.name.textContent = name;
+			room.description.textContent = description;
+			rooms[id] = room;
+
+			roomsContainer.append(room);
+
+			return room;
+		}
+
+		function removeRoom(id) {
+			if (id) {
 				try {
-					roomsContainer.children[roomsContainer.children.length - 1].remove();
+					delete rooms[id];
 				} catch {}
+			} else {
+				roomsContainer.children[roomsContainer.children.length - 1].remove();
 			}
 		}
 
