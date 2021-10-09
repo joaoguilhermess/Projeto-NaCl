@@ -13,9 +13,11 @@
 		* {
 			box-sizing: border-box;
 			transition-duration: 0.5s;
-		}
+			user-select: none;
+		}	
 		::-webkit-scrollbar {
 			width: 0.5em;
+			height: 0.5em;
 			background: #181818;
 		}
 		::-webkit-scrollbar-thumb {
@@ -122,8 +124,9 @@
 			border-bottom-width: 1.5px;
 			border-bottom-color: #353535;
 		}
-		main .rooms .room:target {
+		main .rooms .room:active {
 			max-height: unset;
+			height: fit-content;
 		}
 		main .rooms .room .name {
 			padding: 0.5em;
