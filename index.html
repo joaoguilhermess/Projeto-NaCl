@@ -87,7 +87,7 @@
 		main .rooms .room {
 			display: flex;
 			flex-direction: column;
-			color: #808080;
+			color: #909090;
 			/* flex: 1 0 auto; */
 			padding: 0.5em;
 			height: 10em;
@@ -97,10 +97,6 @@
 			border-bottom-style: solid;
 			border-bottom-width: 1.5px;
 			border-bottom-color: #353535;
-		}
-		main .rooms .room:active {
-			max-height: unset;
-			height: fit-content;
 		}
 		main .rooms .room .header {
 			display: flex;
@@ -118,8 +114,9 @@
 		}
 		main .rooms .room .join {
 			cursor: pointer;
-			background: #25252570;
+			background: transparent;
 			color: #909090;
+			
 			border-bottom-style: solid;
 			border-bottom-width: 1.5px;
 			border-bottom-color: #252525;
@@ -127,10 +124,13 @@
 		main .rooms .room .join:hover {
 			border-bottom-color: #f00000;
 			color: #ffffffd0;
-			background: #25252590;
 		}
 		main .rooms .room:hover .description {
 			color: #808080;
+		}
+		main .rooms .room:active {
+			max-height: none;
+			height: 100%;
 		}
 		footer {
 			flex: 0.05;
@@ -281,47 +281,59 @@
 
 		onkeypress = function(event) {
 			if (event.key == "+") {
-				createRoom("Room " + (roomsContainer.children.length + 1), lorem + lorem + lorem, null);
+				createRoom("Room " + (roomsContainer.children.length + 1), lorem + lorem + lorem + lorem + lorem, null);
 			} else if (event.key == "-") {
 				removeRoom();
 			}
 		}
-		function createRoom(name, description, id) {
-			var room = document.createElement("div");
-			var roomHeader = document.createElement("div");
-			var roomName = document.createElement("div");
-			var roomDescription = document.createElement("div");
-			var joinButton = document.createElement("input");
+		function createRoom(name, description) {
+			console.log("Create Room: " + name, "Description: " + description);
+			socket.emit("create", function(result) {
+				result = JSON.parse(decrypt(result, serverKey));
+				console.log("Create result: " + JSON.stringify(result));
 			
-			room.classList.add("room");
-			roomHeader.classList.add("header");
-			roomName.classList.add("name"); 
-			roomDescription.classList.add("description");
-			joinButton.classList.add("join");
-			room.append(roomHeader);
-			room.header = roomHeader;
+				var room = document.createElement("div");
+				var roomHeader = document.createElement("div");
+				var roomName = document.createElement("div");
+				var roomDescription = document.createElement("div");
+				var joinButton = document.createElement("input");
+				
+				room.classList.add("room");
+				roomHeader.classList.add("header");
+				roomName.classList.add("name"); 
+				roomDescription.classList.add("description");
+				joinButton.classList.add("join");
+				room.append(roomHeader);
+				room.header = roomHeader;
+				
+				room.id = result.roomId;
 
-			room.header.append(roomName);
-			room.name = roomName;
-			room.name.textContent = name;
+				room.header.append(roomName);
+				room.name = roomName;
+				room.name.textContent = name;
 
-			room.header.append(joinButton);
-			room.join = joinButton;
-			room.join.type = "submit";
+				room.header.append(joinButton);
+				room.join = joinButton;
+				room.join.type = "submit";
+				room.join.value = "Join";
+				room.join.onclick = function(event) {
+					console.log("Click: " + room.name.textContent);
+				}
 
-			room.append(roomDescription);
-			room.description = roomDescription;
-			room.description.textContent = description;
+				room.append(roomDescription);
+				room.description = roomDescription;
+				room.description.textContent = description;
 
-			room.id = id;
-			rooms[id] = room;
+				rooms[room.id] = room;
 
-			roomsContainer.append(room);
+				roomsContainer.append(room);
 
-			return room;
+				});
+			// return room;
 		}
 
 		function removeRoom(id) {
+			console.log("Create Room: " + id);
 			if (id) {
 				try {
 					delete rooms[id];

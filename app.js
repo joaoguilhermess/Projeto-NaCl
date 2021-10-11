@@ -13,6 +13,7 @@ function encrypt(message, key) {
 	// if (typeof message == "object") {
 		// message = JSON.stringify(message);
 	// }
+	message = JSON.stringify(message);
 	var nonce = nacl.randomBytes(nacl.box.nonceLength);
 	var array = util.decodeUTF8(message);
 	var encrypted = nacl.box(array, nonce, key, keys.secretKey);
@@ -111,7 +112,7 @@ io.sockets.on("connection", function(socket) {
 		}
 	});
 	socket.on("create", function(callback) {
-		try {
+		// try {
 			if (typeof callback != "function") {return;}
 			if (!socket.logged) {return;}
 			if (socket.room) {return;}
@@ -130,13 +131,13 @@ io.sockets.on("connection", function(socket) {
 					rooms[socket.room] = {};
 					rooms[socket.room].owner = socket;
 					rooms[socket.room].clients = [];
-					return callback(encrypt({"room": room}, socket.publicKey));
+					return callback(encrypt({"roomId": room}, socket.publicKey));
 				}
 			}
 			callback(false);
-		} catch (e) {
-			console.error(`create(${typeof callback}); Error: ${e}`);
-		}
+		// } catch (e) {
+		// 	console.error(`create(${typeof callback}); Error: ${e}`);
+		// }
 	});
 	socket.on("join", function(room, callback) {
 		try {
