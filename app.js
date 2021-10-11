@@ -131,6 +131,7 @@ io.sockets.on("connection", function(socket) {
 					rooms[socket.room] = {};
 					rooms[socket.room].owner = socket;
 					rooms[socket.room].clients = [];
+					rooms[socket.room].clients.push(socket);
 					return callback(encrypt({"roomId": room}, socket.publicKey));
 				}
 			}
@@ -169,6 +170,22 @@ io.sockets.on("connection", function(socket) {
 			console.error(`join(${room}, ${typeof callback}); Error: ${e}`);
 		}
 	});
+	socket.on("rooms", function(callback) {
+		try {
+			if (typeof callback != "function") {return;}
+			var roomsList = Object.keys(rooms);
+			console.log(roomsList);
+			var result = [];
+			for (var i = 0; i < roomsList.length; i++) {
+				result.push({
+					name: roomsList[i]
+				});
+			}
+			//callback(result);
+		} catch (e) {
+			console.error(`message(${message}, ${typeof callback}); Error: ${e}`);
+		}
+	})
 	socket.on("message", function(message, callback) {
 		try {
 			if (typeof message != "string") {return};

@@ -40,6 +40,11 @@
 		}
 		body {
 			background-color: #181818;
+			display: flex;
+			position: fixed;
+			flex-direction: column;
+			width: 100%;
+			height: 100%;
 		}
 		input {
 			border-top: 0;
@@ -48,13 +53,6 @@
 			padding: 0.5em;
 			padding-left: 1em;
 			padding-right: 1em;
-		}
-		.chat {
-			display: flex;
-			position: fixed;
-			flex-direction: column;
-			width: 100%;
-			height: 100%;
 		}
 		header, main, footer {
 			display: flex;
@@ -104,7 +102,6 @@
 			display: flex;
 			flex-direction: column;
 			color: #909090;
-			/* flex: 1 0 auto; */
 			padding: 0.5em;
 			height: 10em;
 			max-height: 10em;
@@ -132,7 +129,6 @@
 			cursor: pointer;
 			background: transparent;
 			color: #909090;
-			
 			border-bottom-style: solid;
 			border-bottom-width: 1.5px;
 			border-bottom-color: #252525;
@@ -238,7 +234,6 @@
 	</style>
 </head>
 <body>
-	<section class="chat">
 		<header>
 			<span>Projeto NaCl</span>
 		</header>
@@ -270,7 +265,6 @@
 				</div>
 			</div>
 		</footer>
-	</section>
 </body>
 	<script type="text/javascript" src="socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="nacl.js"></script>
@@ -289,10 +283,9 @@
 		const header = document.querySelector("header");
 		const main = document.querySelector("main");
 		const footer = document.querySelector("footer");
-		const chatSection = document.querySelector(".chat");
 		const createRoomDiv = document.querySelector("main .left .create");
 		const choseRoomDiv = document.querySelector("main .left .chose");
-		const roomsContainer = document.querySelector(".rooms");
+		const roomsContainer = document.querySelector("main .right .rooms");
 		const userContainer = document.querySelector(".user");
 		const userNameDiv = document.querySelector(".user .name");
 		const useridDiv = document.querySelector(".user .id");
