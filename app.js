@@ -174,13 +174,15 @@ io.sockets.on("connection", function(socket) {
 		try {
 			if (typeof callback != "function") {return;}
 			var roomsList = Object.keys(rooms);
-			console.log(roomsList);
 			var result = [];
 			for (var i = 0; i < roomsList.length; i++) {
+				var room = rooms[roomsList[i]];
 				result.push({
-					name: roomsList[i]
+					name: room.name,
+					clients:
 				});
 			}
+			console.log(result);
 			//callback(result);
 		} catch (e) {
 			console.error(`message(${message}, ${typeof callback}); Error: ${e}`);
