@@ -73,9 +73,13 @@
 			background: #202020;
 			flex: 0.9;
 		}
-		main .title {
+		main .left {
 			text-align: center;
 			flex: 0.25;
+		}
+		main .left .title {
+			width: 100%;
+			height: 25%;
 		}
 		main .rooms {
 			max-height: 100%;
@@ -227,7 +231,11 @@
 			<span>header</span>
 		</header>
 		<main>
-			<div class="title">Chose a room</div>
+			<div class="left">
+				<div class="title">Create room</div>
+				<div class="title">Chose room</div>
+			</div>
+
 			<div class="rooms"></div>
 		</main>
 		<footer>
@@ -281,7 +289,7 @@
 
 		onkeypress = function(event) {
 			if (event.key == "+") {
-				createRoom("Room " + (roomsContainer.children.length + 1), lorem + lorem + lorem + lorem + lorem, null);
+				createRoom("Room " + (roomsContainer.children.length + 1), lorem, null);
 			} else if (event.key == "-") {
 				removeRoom();
 			}
@@ -344,6 +352,7 @@
 		}
 
 		function encrypt(message, key) {
+			console.log("Encrypt: " + message, "Key: " + key);
 			try {
 				var nonce = nacl.randomBytes(nacl.box.nonceLength);
 				var array = nacl.util.decodeUTF8(message);
@@ -358,6 +367,7 @@
 		}
 
 		function decrypt(message, key) {
+			console.log("Decrypt: " + message, "Key: " + key);
 			try {
 				var array = nacl.util.decodeBase64(message);
 				var nonce = array.slice(0, nacl.box.nonceLength);
@@ -383,11 +393,13 @@
 		var messageNonce;
 		var clientId;
 		socket.emit("serverKey", function(key) {
+			console.log("Server Key: " + key);
 			serverKey = nacl.util.decodeBase64(key);
-			console.log("server", serverKey);
-			console.log("client", keys.publicKey);
+			// console.log("server", serverKey);
+			// console.log("client", keys.publicKey);
 			
 			socket.emit("login", encrypt(myname, serverKey), nacl.util.encodeBase64(keys.publicKey), function(nonce, id) {
+				console.log("Login: " + myname, "Key: " + keys.publicKey);
 				messageNonce = decrypt(nonce, serverKey);
 				clientId = decrypt(id, serverKey);
 				userNameDiv.textContent = myname;
