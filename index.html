@@ -311,7 +311,7 @@
 
 		function createRoom(name, description) {
 			console.log("Create Room: " + name, "Description: " + description);
-			socket.emit("create", function(result) {
+			socket.emit("create", encrypt(description, serverKey), function(result) {
 				result = JSON.parse(decrypt(result, serverKey));
 				console.log("Create result: " + JSON.stringify(result));
 			
@@ -427,6 +427,13 @@
 		});
 		socket.on("ask", function(room, id) {
 			
+		});
+		socket.on("updateroom", function() {
+			socket.emit("rooms", function(rooms) {
+				for (var i = 0; i < rooms.length; i++) {
+
+				}
+			});
 		});
 		socket.on("join", function(room, id) {
 			

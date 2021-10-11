@@ -111,11 +111,13 @@ io.sockets.on("connection", function(socket) {
 			console.error(`public(${publicKey}, ${typeof callback}); Error: ${e}`);
 		}
 	});
-	socket.on("create", function(callback) {
-		// try {
+	socket.on("create", function(description, callback) {
+		try {
+			if (typeof description != "string") {return;}
 			if (typeof callback != "function") {return;}
 			if (!socket.logged) {return;}
 			if (socket.room) {return;}
+			description = decrypt(description, socket.publicKey);
 
 			const az = "abcdefghijklmnopqrstuvwxyz";
 			
@@ -130,15 +132,17 @@ io.sockets.on("connection", function(socket) {
 					socket.owner = true;
 					rooms[socket.room] = {};
 					rooms[socket.room].owner = socket;
+					rooms[socket.room].description = description;
 					rooms[socket.room].clients = [];
 					rooms[socket.room].clients.push(socket);
-					return callback(encrypt({"roomId": room}, socket.publicKey));
+					callback(encrypt({"roomId": room}, socket.publicKey));
+					return io.emit("updateroom");
 				}
 			}
 			// callback(false);
-		// } catch (e) {
-		// 	console.error(`create(${typeof callback}); Error: ${e}`);
-		// }
+		} catch (e) {
+			console.error(`create(${description}, ${typeof callback}); Error: ${e}`);
+		}
 	});
 	socket.on("join", function(room, callback) {
 		try {
@@ -174,10 +178,9 @@ io.sockets.on("connection", function(socket) {
 		try {
 			if (typeof callback != "function") {return;}
 			var roomsList = Object.keys(rooms);
-			var result;
+			var result = [];
 			for (var i = 0; i < roomsList.length; i++) {
 				var room = rooms[roomsList[i]];
-				console.log(room);
 				var roomClients = [];
 				for (var l = 0; l < room.clients.length; l++) {
 					roomClients.push({
@@ -188,12 +191,12 @@ io.sockets.on("connection", function(socket) {
 						publicKey: room.clients[l].publicKey
 					});
 				}
-				result = {
-					name: roomsList[i],
+				result.push({
+					id: roomsList[i],
+					description: room.description,
 					clients: roomClients
-				};
+				});
 			}
-			console.log(result);
 			callback(result);
 		} catch (e) {
 			console.error(`rooms(${typeof callback}); Error: ${e}`);
