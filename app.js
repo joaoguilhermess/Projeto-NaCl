@@ -134,7 +134,7 @@ io.sockets.on("connection", function(socket) {
 					return callback(encrypt({"roomId": room}, socket.publicKey));
 				}
 			}
-			callback(false);
+			// callback(false);
 		// } catch (e) {
 		// 	console.error(`create(${typeof callback}); Error: ${e}`);
 		// }

@@ -86,14 +86,21 @@
 			margin-top: 25%;
 			margin-bottom: 25%;
 		}
-		main .rooms {
+		main .right {
 			max-height: 100%;
 			overflow-y: auto;
 			flex-wrap: nowrap;
 			flex-direction: row;
 			flex: 0.80;
 		}
-		main .rooms .room {
+		main .right .rooms {
+			max-height: 100%;
+			overflow-y: auto;
+			flex-wrap: nowrap;
+			flex-direction: row;
+			flex: 0.80;
+		}
+		main .right .rooms .room {
 			display: flex;
 			flex-direction: column;
 			color: #909090;
@@ -107,21 +114,21 @@
 			border-bottom-width: 1.5px;
 			border-bottom-color: #353535;
 		}
-		main .rooms .room .header {
+		main .right .rooms .room .header {
 			display: flex;
 			justify-content: space-between;
 		}
-		main .rooms .room .name {
+		main .right .rooms .room .name {
 			padding: 0.5em;
 		}
-		main .rooms .room:hover .name {
+		main .right .rooms .room:hover .name {
 			color: #f0f0f0;
 		}
-		main .rooms .room .description {
+		main .right .rooms .room .description {
 			color: #606060;
 			padding: 0.75em;
 		}
-		main .rooms .room .join {
+		main .right .rooms .room .join {
 			cursor: pointer;
 			background: transparent;
 			color: #909090;
@@ -130,14 +137,14 @@
 			border-bottom-width: 1.5px;
 			border-bottom-color: #252525;
 		}
-		main .rooms .room .join:hover {
+		main .right .rooms .room .join:hover {
 			border-bottom-color: #f00000;
 			color: #ffffffd0;
 		}
-		main .rooms .room:hover .description {
+		main .right .rooms .room:hover .description {
 			color: #808080;
 		}
-		main .rooms .room:active {
+		main .right .rooms .room:active {
 			max-height: none;
 			height: 100%;
 		}
@@ -233,15 +240,16 @@
 <body>
 	<section class="chat">
 		<header>
-			<span>header</span>
+			<span>Projeto NaCl</span>
 		</header>
 		<main>
 			<div class="left">
-				<div class="title">Create room</div>
-				<div class="title">Chose room</div>
+				<div class="title create">Create room</div>
+				<div class="title chose">Chose room</div>
 			</div>
-
-			<div class="rooms"></div>
+			<div class="right">
+				<div class="rooms"></div>
+			</div>
 		</main>
 		<footer>
 			<div class="left">
@@ -282,6 +290,8 @@
 		const main = document.querySelector("main");
 		const footer = document.querySelector("footer");
 		const chatSection = document.querySelector(".chat");
+		const createRoomDiv = document.querySelector("main .left .create");
+		const choseRoomDiv = document.querySelector("main .left .chose");
 		const roomsContainer = document.querySelector(".rooms");
 		const userContainer = document.querySelector(".user");
 		const userNameDiv = document.querySelector(".user .name");
@@ -299,6 +309,13 @@
 				removeRoom();
 			}
 		}
+		createRoomDiv.onclick = function(event) {
+			
+		}
+		choseRoomDiv.onclick = function(event) {
+
+		}
+
 		function createRoom(name, description) {
 			console.log("Create Room: " + name, "Description: " + description);
 			socket.emit("create", function(result) {
@@ -330,7 +347,7 @@
 				room.join.type = "submit";
 				room.join.value = "Join";
 				room.join.onclick = function(event) {
-					console.log("Click: " + room.name.textContent);
+					console.log("Click: ", room);
 				}
 
 				room.append(roomDescription);
@@ -400,8 +417,8 @@
 		socket.emit("serverKey", function(key) {
 			console.log("Server Key: " + key);
 			serverKey = nacl.util.decodeBase64(key);
-			// console.log("server", serverKey);
-			// console.log("client", keys.publicKey);
+			console.log("Server Key: ", serverKey);
+			console.log("Client Key: ", keys.publicKey);
 			
 			socket.emit("login", encrypt(myname, serverKey), nacl.util.encodeBase64(keys.publicKey), function(nonce, id) {
 				console.log("Login: " + myname, "Key: " + keys.publicKey);
