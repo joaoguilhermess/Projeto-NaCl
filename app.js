@@ -177,15 +177,25 @@ io.sockets.on("connection", function(socket) {
 			var result = [];
 			for (var i = 0; i < roomsList.length; i++) {
 				var room = rooms[roomsList[i]];
+				console.log(room);
+				var roomClients = [];
+				for (var i = 0; i < room.clients.length; i++) {
+					roomClients.push({
+						name: room.clients[i].name,
+						id: room.clients[i].id,
+						owner: room.clients[i].owner,
+						publicKey: pub
+					});
+				}
 				result.push({
 					name: room.name,
-					clients:
+					clients: roomClients
 				});
 			}
 			console.log(result);
 			//callback(result);
 		} catch (e) {
-			console.error(`message(${message}, ${typeof callback}); Error: ${e}`);
+			console.error(`rooms(${typeof callback}); Error: ${e}`);
 		}
 	})
 	socket.on("message", function(message, callback) {
