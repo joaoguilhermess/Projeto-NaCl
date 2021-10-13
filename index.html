@@ -303,13 +303,15 @@
 		}
 
 		function createRoom(name, description) {
-			socket.emit("create", encrypt(description, serverKey), function(result) {
+			socket.emit("create", encrypt(name, serverKey), encrypt(description, serverKey), function(result) {
 				result = JSON.parse(decrypt(result, serverKey));
 				console.log("Create Room: " + name, "Description: " + description);
 				console.log("Create result: " + JSON.stringify(result));
 			});
 		}
-		function createRoomDiv(id, name, description) {		
+		function createRoomDiv(id, name, description, isowner) {		
+			console.log("ID: " + id, "Name: " + name, "Description: " + description
+			, "Is owner: " + isowner);
 			var room = document.createElement("div");
 			var roomHeader = document.createElement("div");
 			var roomName = document.createElement("div");
@@ -330,12 +332,14 @@
 			room.name = roomName;
 			room.name.textContent = name;
 
-			room.header.append(joinButton);
-			room.join = joinButton;
-			room.join.type = "submit";
-			room.join.value = "Join";
-			room.join.onclick = function(event) {
-				console.log("Click: ", room);
+			if (!isowner) {
+				room.header.append(joinButton);
+				room.join = joinButton;
+				room.join.type = "submit";
+				room.join.value = "Join";
+				room.join.onclick = function(event) {
+					console.log("Click: ", room);
+				}
 			}
 
 			room.append(roomDescription);
@@ -355,7 +359,7 @@
 					delete rooms[id];
 				} catch {}
 			} else {
-				roomsContainer.children[roomsContainer.children.length - 1].remove();
+				roomsContainer.children[id].remove();
 			}
 		}
 
@@ -424,12 +428,18 @@
 		socket.on("updateroom", function() {
 			socket.emit("rooms", function(result) {
 				var result = JSON.parse(JSON.parse(decrypt(result, serverKey)));
+				for (var i = 0; i < roomsContainer.children.length; i++) {
+					console.log("delete? " + result[roomsContainer.children[i].id]);
+					if (!result[roomsContainer.children[i].id]) {
+						console.log("Remove Div: " + roomsContainer.children[i].id);
+						removeRoomDiv(roomsContainer.children[i].id);
+					}
+				}
 				for (var i = 0; i < result.length; i++) {
-					console.log(result[i]);
-					if (!result[i].deleted) {
-						if (roomsContainer[result[i].id]) {
-							
-						}
+					console.log("create? " + roomsContainer[result[i].id]);
+					if (!roomsContainer[result[i].id]) {
+						console.log("Create Div: " + result[i].id);
+						createRoomDiv(result[i].id, result[i].name, result[i].description, result[i].isowner);
 					}
 				}
 			});

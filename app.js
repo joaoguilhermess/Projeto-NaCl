@@ -111,12 +111,14 @@ io.sockets.on("connection", function(socket) {
 			console.error(`public(${publicKey}, ${typeof callback}); Error: ${e}`);
 		}
 	});
-	socket.on("create", function(description, callback) {
+	socket.on("create", function(name, description, callback) {
 		try {
+			if (typeof name != "string") {return;}
 			if (typeof description != "string") {return;}
 			if (typeof callback != "function") {return;}
 			if (!socket.logged) {return;}
 			if (socket.room) {return;}
+			name = decrypt(name, socket.publicKey);
 			description = decrypt(description, socket.publicKey);
 
 			const az = "abcdefghijklmnopqrstuvwxyz";
@@ -131,6 +133,8 @@ io.sockets.on("connection", function(socket) {
 					socket.room = room;
 					socket.owner = true;
 					rooms[socket.room] = {};
+					rooms[socket.room].id = socket.room;
+					rooms[socket.room].name = name;
 					rooms[socket.room].owner = socket;
 					rooms[socket.room].description = description;
 					rooms[socket.room].clients = [];
@@ -141,7 +145,7 @@ io.sockets.on("connection", function(socket) {
 			}
 			return callback(encrypt({success: false}, socket.publicKey));
 		} catch (e) {
-			console.error(`create(${description}, ${typeof callback}); Error: ${e}`);
+			console.error(`create(${name}, ${description}, ${typeof callback}); Error: ${e}`);
 		}
 	});
 	socket.on("join", function(room, callback) {
@@ -208,11 +212,12 @@ io.sockets.on("connection", function(socket) {
 				}
 				result.push({
 					id: roomsList[i],
+					name: room.name,
+					isowner: socket == room.owner,
 					description: room.description,
 					clients: roomClients
 				});
 			}
-			console.log(result);
 			callback(encrypt(JSON.stringify(result), socket.publicKey));
 		} catch (e) {
 			console.error(`rooms(${typeof callback}); Error: ${e}`);
@@ -267,7 +272,8 @@ io.sockets.on("connection", function(socket) {
 				}
 				if (socket.owner) {
 					delete rooms[socket.room];
-				}	
+				}
+				return io.emit("updateroom");
 			}
 			
 			delete socket;
