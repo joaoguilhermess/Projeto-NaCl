@@ -283,8 +283,8 @@
 		const header = document.querySelector("header");
 		const main = document.querySelector("main");
 		const footer = document.querySelector("footer");
-		const createRoomDiv = document.querySelector("main .left .create");
-		const choseRoomDiv = document.querySelector("main .left .chose");
+		const createRoomButton = document.querySelector("main .left .create");
+		const choseRoomButton = document.querySelector("main .left .chose");
 		const roomsContainer = document.querySelector("main .right .rooms");
 		const userContainer = document.querySelector(".user");
 		const userNameDiv = document.querySelector(".user .name");
@@ -295,67 +295,60 @@
 		const keyTitleDiv = document.querySelector(".key .title");
 		const keyContentDiv = document.querySelector(".key .content");
 
-		onkeypress = function(event) {
-			if (event.key == "+") {
-				createRoom("Room " + (roomsContainer.children.length + 1), lorem, null);
-			} else if (event.key == "-") {
-				removeRoom();
-			}
+		createRoomButton.onclick = function(event) {
+			createRoom("Room " + (roomsContainer.children.length + 1), lorem);
 		}
-		createRoomDiv.onclick = function(event) {
-			
-		}
-		choseRoomDiv.onclick = function(event) {
+		choseRoomButton.onclick = function(event) {
 
 		}
 
 		function createRoom(name, description) {
-			console.log("Create Room: " + name, "Description: " + description);
 			socket.emit("create", encrypt(description, serverKey), function(result) {
 				result = JSON.parse(decrypt(result, serverKey));
+				console.log("Create Room: " + name, "Description: " + description);
 				console.log("Create result: " + JSON.stringify(result));
+			});
+		}
+		function createRoomDiv(id, name, description) {		
+			var room = document.createElement("div");
+			var roomHeader = document.createElement("div");
+			var roomName = document.createElement("div");
+			var roomDescription = document.createElement("div");
+			var joinButton = document.createElement("input");
 			
-				var room = document.createElement("div");
-				var roomHeader = document.createElement("div");
-				var roomName = document.createElement("div");
-				var roomDescription = document.createElement("div");
-				var joinButton = document.createElement("input");
-				
-				room.classList.add("room");
-				roomHeader.classList.add("header");
-				roomName.classList.add("name"); 
-				roomDescription.classList.add("description");
-				joinButton.classList.add("join");
-				room.append(roomHeader);
-				room.header = roomHeader;
-				
-				room.id = result.roomId;
+			room.classList.add("room");
+			roomHeader.classList.add("header");
+			roomName.classList.add("name"); 
+			roomDescription.classList.add("description");
+			joinButton.classList.add("join");
+			room.append(roomHeader);
+			room.header = roomHeader;
+			
+			room.id = id;
 
-				room.header.append(roomName);
-				room.name = roomName;
-				room.name.textContent = name;
+			room.header.append(roomName);
+			room.name = roomName;
+			room.name.textContent = name;
 
-				room.header.append(joinButton);
-				room.join = joinButton;
-				room.join.type = "submit";
-				room.join.value = "Join";
-				room.join.onclick = function(event) {
-					console.log("Click: ", room);
-				}
+			room.header.append(joinButton);
+			room.join = joinButton;
+			room.join.type = "submit";
+			room.join.value = "Join";
+			room.join.onclick = function(event) {
+				console.log("Click: ", room);
+			}
 
-				room.append(roomDescription);
-				room.description = roomDescription;
-				room.description.textContent = description;
+			room.append(roomDescription);
+			room.description = roomDescription;
+			room.description.textContent = description;
 
-				rooms[room.id] = room;
+			rooms[room.id] = room;
 
-				roomsContainer.append(room);
-
-				});
+			roomsContainer.append(room);
 			// return room;
 		}
 
-		function removeRoom(id) {
+		function removeRoomDiv(id) {
 			console.log("Create Room: " + id);
 			if (id) {
 				try {
@@ -429,9 +422,15 @@
 			
 		});
 		socket.on("updateroom", function() {
-			socket.emit("rooms", function(rooms) {
-				for (var i = 0; i < rooms.length; i++) {
-					console.log(rooms[i]);
+			socket.emit("rooms", function(result) {
+				var result = JSON.parse(JSON.parse(decrypt(result, serverKey)));
+				for (var i = 0; i < result.length; i++) {
+					console.log(result[i]);
+					if (!result[i].deleted) {
+						if (roomsContainer[result[i].id]) {
+							
+						}
+					}
 				}
 			});
 		});

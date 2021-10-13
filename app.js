@@ -104,9 +104,9 @@ io.sockets.on("connection", function(socket) {
 						socket.to(room.clients[i]).emit("publicKey", encrypt({"id": socket.id, "key": socket.publicKey}, room.clients[i].publicKey));
 					}
 				}
-				return callback(true);
+				return callback(encrypt({success: true}, socket.publicKey));
 			}
-			callback(false);
+			return callback(encrypt({success: false}, socket.publicKey));
 		} catch (e) {
 			console.error(`public(${publicKey}, ${typeof callback}); Error: ${e}`);
 		}
@@ -139,7 +139,7 @@ io.sockets.on("connection", function(socket) {
 					return io.emit("updateroom");
 				}
 			}
-			// callback(false);
+			return callback(encrypt({success: false}, socket.publicKey));
 		} catch (e) {
 			console.error(`create(${description}, ${typeof callback}); Error: ${e}`);
 		}
@@ -162,21 +162,36 @@ io.sockets.on("connection", function(socket) {
 					if (permission) {
 						for (var i = 0; i < room.clients.length; i++) {
 							socket.to(room.clients[i]).emit("join", encrypt({"id": socket.id}, room.clients[i].publicKey));
-							return callback(true);
+							return callback(encrypt({success: true}, socket.publicKey));
 						}
 					} else {
-						return callback(false);
+						return callback(encrypt({success: false}, socket.publicKey));
 					}
 				});
 			}
-			callback(false);
+			return callback(encrypt({success: false}, socket.publicKey));
 		} catch (e) {
 			console.error(`join(${room}, ${typeof callback}); Error: ${e}`);
+		}
+	});
+	socket.on("delete", function(room, callback) {
+		try {
+			if (typeof room != "string") {return};
+			if (typeof callback != "function") {return;}
+			if (!socket.logged) {return;}
+			if (!socket.room) {return;}
+			if (!socket.owner) {return;}
+			
+
+		} catch (e) {
+			console.error(`rooms(${typeof callback}); Error: ${e}`);
 		}
 	});
 	socket.on("rooms", function(callback) {
 		try {
 			if (typeof callback != "function") {return;}
+			if (!socket.logged) {return;}
+
 			var roomsList = Object.keys(rooms);
 			var result = [];
 			for (var i = 0; i < roomsList.length; i++) {
@@ -197,7 +212,8 @@ io.sockets.on("connection", function(socket) {
 					clients: roomClients
 				});
 			}
-			callback(result);
+			console.log(result);
+			callback(encrypt(JSON.stringify(result), socket.publicKey));
 		} catch (e) {
 			console.error(`rooms(${typeof callback}); Error: ${e}`);
 		}
@@ -212,9 +228,9 @@ io.sockets.on("connection", function(socket) {
 			var room = rooms[socket.room];
 			for (var i = 0; i < room.clients.length; i++) {
 				socket.to(room.clients[i]).emit("message", encrypt({"id": socket.id, "code": socket.nonce, "message": message}, room.clients[i].publicKey));
-				return callback(true);
+				return callback(encrypt({success: true}, socket.publicKey));
 			} 
-			callback(false);
+			return callback(encrypt({success: false}, socket.publicKey));
 		} catch (e) {
 			console.error(`message(${message}, ${typeof callback}); Error: ${e}`);
 		}
@@ -229,9 +245,9 @@ io.sockets.on("connection", function(socket) {
 			var room = rooms[socket.room];
 			for (var i = 0; i < room.clients.length; i++) {
 				socket.to(room.clients[i]).emit("read", encrypt({"id": socket.id, "code": code}, room.clients[i].publicKey));
-				return callback(true);
+				return callback(encrypt({success: true}, socket.publicKey));
 			} 
-			callback(false);
+			return callback(encrypt({success: false}, socket.publicKey));
 
 		} catch (e) {
 			console.error(`message(${message}, ${typeof callback}); Error: ${e}`);
