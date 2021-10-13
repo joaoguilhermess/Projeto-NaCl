@@ -431,7 +431,7 @@
 		socket.on("updateroom", function() {
 			socket.emit("rooms", function(rooms) {
 				for (var i = 0; i < rooms.length; i++) {
-
+					console.log(rooms[i]);
 				}
 			});
 		});
