@@ -353,13 +353,10 @@
 
 		function removeRoomDiv(id) {
 			console.log("Create Room: " + id);
-			if (id) {
-				try {
-					delete rooms[id];
-				} catch {}
-			} else {
+			try {
+				delete rooms[id];
 				roomsContainer.children[id].remove();
-			}
+			} catch {}
 		}
 
 		function encrypt(message, key) {
@@ -427,24 +424,44 @@
 		socket.on("updateroom", function() {
 			socket.emit("rooms", function(result) {
 				result = JSON.parse(JSON.parse(decrypt(result, serverKey)));
-				console.log(rooms);
-				console.log(result);
-				for (var i = 0; i < roomsContainer.children.length; i++) {
-					console.log("delete? " + !result[roomsContainer.children[i].id]);
-					for (var i = 0; i < result.length; i++) {
-						if (result[i].id == roomsContainer.children[i].id) {
-							console.log("Remove Div: " + roomsContainer.children[i].id);
-							removeRoomDiv(roomsContainer.children[i].id);
+				console.log("result: ", result);
+				roomsContainer.innerHTML = "";
+				for (var i = 0; i < result.length; i++) {
+					createRoomDiv(result[i].id, result[i].name, result[i].description, result[i].isowner);
+				}
+
+				return;
+				
+				var remove = [];
+				var create = [];
+				for (var i = 0; i < result.length; i++) {
+					for (var l = 0; l < roomsContainer.children.length; l++) {
+						if (result[i].id == roomsContainer.children[l].id) {
 							break;
+						}
+						if (l == roomsContainer.children.length) {
+							remove.push(result[i].id);
 						}
 					}
 				}
 				for (var i = 0; i < result.length; i++) {
-					console.log("create? " + !roomsContainer[result[i].id]);
-					if (!roomsContainer[result[i].id]) {
-						console.log("Create Div: " + result[i].id);
-						createRoomDiv(result[i].id, result[i].name, result[i].description, result[i].isowner);
+					for (var l = 0; l < roomsContainer.children.length; l++) {
+						if (result[i].id != roomsContainer.children[l].id) {
+							break;
+						}
+						if (l == roomsContainer.children.length) {
+							// create.push(result[i].id);
+						}
 					}
+					create.push(result[i].id);
+				}
+				for (var i = 0; i < remove.length; i++) {
+					console.log("remove: ", remove[i]);
+					removeRoomDiv(result[i].id);
+				}
+				for (var i = 0; i < create.length; i++) {
+					console.log("create: ", create[i]);
+					createRoomDiv(result[i].id, result[i].name, result[i].description, result[i].isowner);
 				}
 			});
 		});
