@@ -81,7 +81,8 @@ io.sockets.on("connection", function(socket) {
 				socket.name = name;
 				socket.publicKey = publicKey;
 				socket.nonce = util.encodeBase64(nacl.randomBytes(nacl.box.nonceLength));
-				return callback(encrypt(socket.nonce, socket.publicKey), encrypt(socket.id, socket.publicKey));
+				callback(encrypt(socket.nonce, socket.publicKey), encrypt(socket.id, socket.publicKey));
+				return io.emit("updateroom");
 			}
 			callback();
 		} catch (e) {

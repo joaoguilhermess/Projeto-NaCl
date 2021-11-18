@@ -14,6 +14,8 @@
 			box-sizing: content-box;
 			transition-duration: 0.5s;
 			user-select: none;
+			font-size: 14px;
+			font-family: Whitney;
 		}	
 		::-webkit-scrollbar {
 			width: 0.5em;
@@ -90,6 +92,91 @@
 			flex-wrap: nowrap;
 			flex-direction: row;
 			flex: 0.80;
+		}
+		main .right .edit {
+			max-height: 100%;
+			overflow-y: auto;
+			flex-wrap: nowrap;
+			flex-direction: row;
+			flex: 0.80;
+		}
+		main .right .edit .room {
+			display: flex;
+			flex-direction: column;
+			color: #909090;
+			padding: 0.5em;
+			height: 10em;
+			max-height: 10em;
+			overflow-y: hidden;
+			background-color: #222222;
+			border-bottom-style: solid;
+			border-bottom-width: 1.5px;
+			border-bottom-color: #353535;
+		}
+		main .right .edit .room .header {
+			display: flex;
+			justify-content: space-between;
+		}
+		main .right .edit .room .name {
+			padding: 0.5em;
+		}
+		main .right .edit .room .name {
+			font-family: Whitney;
+			outline: 0;
+			width: 100%;
+			transition-duration: 0.5s;
+			border-top-right-radius: 5%;
+			border-top-left-radius: 5%;
+			border-bottom-style: solid;
+			border-bottom-width: 1.5px;
+			border-bottom-color: #353535;
+			box-sizing: border-box;
+			color: #ffffffd0;
+			background: #25252570;
+		}
+		main .right .edit .room .name::placeholder {
+			color: #909090;
+			padding: 0.5em;
+		}
+		main .right .edit .room:hover .name {
+			color: #f0f0f0;
+		}
+		main .right .edit .room .description {
+			color: #808080;
+			padding: 0.75em;
+		}
+		main .right .edit .room .description {
+			font-family: Whitney;
+			outline: 0;
+			width: 100%;
+			transition-duration: 0.5s;
+			border-top-right-radius: 5%;
+			border-top-left-radius: 5%;
+			/* border-bottom-style: solid; */
+			/* border-bottom-width: 1.5px; */
+			/* border-bottom-color: #353535; */
+			border-bottom: 0;
+			color: #ffffffd0;
+			background: #25252570;
+		}
+		main .right .edit .room .description::placeholder {
+			color: #606060;
+			padding: 0.5em;
+		}
+		main .right .edit .room .join {
+			cursor: pointer;
+			background: transparent;
+			color: #909090;
+			border-bottom-style: solid;
+			border-bottom-width: 1.5px;
+			border-bottom-color: #252525;
+		}
+		main .right .edit .room .join:hover {
+			border-bottom-color: #f00000;
+			color: #ffffffd0;
+		}
+		main .right .edit .room:hover .description {
+			color: #808080;
 		}
 		main .right .rooms {
 			max-height: 100%;
@@ -243,6 +330,14 @@
 				<div class="title chose">Chose room</div>
 			</div>
 			<div class="right">
+				<div class="edit">
+					<div class="room">
+						<div class="header">
+							<input class="name" placeholder="Room name">
+						</div>
+						<input class="description" placeholder="Room description">
+					</div>
+				</div>
 				<div class="rooms"></div>
 			</div>
 		</main>
@@ -286,6 +381,7 @@
 		const createRoomButton = document.querySelector("main .left .create");
 		const choseRoomButton = document.querySelector("main .left .chose");
 		const roomsContainer = document.querySelector("main .right .rooms");
+		const editRoomContainer = document.querySelector("main .right .edit");
 		const userContainer = document.querySelector(".user");
 		const userNameDiv = document.querySelector(".user .name");
 		const useridDiv = document.querySelector(".user .id");
@@ -297,6 +393,7 @@
 
 		createRoomButton.onclick = function(event) {
 			createRoom("Room " + (roomsContainer.children.length + 1), lorem);
+
 		}
 		choseRoomButton.onclick = function(event) {
 
